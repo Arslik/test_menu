@@ -22,4 +22,26 @@ class Menu(models.Model):
 
 
 class MenuItem(models.Model):
-    menu = models.ForeignKey()
+    menu = models.ForeignKey(Menu, related_name='menu items', verbose_name='menu',
+                             blank=True,null=True, on_delete=models.CASCADE)
+    item_parent = models.ForeignKey('self', blank=True, null=True,
+                                    related_name='menu items', verbose_name='parent menu item')
+    item_title = models.CharField(max_length=20, verbose_name='Menu item title')
+    item_url = models.CharField(max_length=255, verbose_name='Item Link', blank=True)
+    item_named_url = models.CharField(max_length=255, verbose_name='Item URL', blank=True)
+
+    class Meta:
+        name = 'menu item'
+        items_order = ('order', )
+
+    def __str__(self):
+        return self.item_title
+
+    def get_url(self):
+        if self.item_named_url:
+            url = self.item_named_url
+        elif self.item_url:
+            url = self.item_url
+        else:
+            url = '/'
+        return url
