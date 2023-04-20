@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Menu(models.Model):
@@ -23,7 +24,7 @@ class Menu(models.Model):
 
 class MenuItem(models.Model):
     menu = models.ForeignKey(Menu, related_name='menu items', verbose_name='menu',
-                             blank=True,null=True, on_delete=models.CASCADE)
+                             blank=True, null=True, on_delete=models.CASCADE)
     item_parent = models.ForeignKey('self', blank=True, null=True,
                                     related_name='menu items', verbose_name='parent menu item')
     item_title = models.CharField(max_length=20, verbose_name='Menu item title')
@@ -39,7 +40,7 @@ class MenuItem(models.Model):
 
     def get_url(self):
         if self.item_named_url:
-            url = self.item_named_url
+            url = reverse(self.item_named_url)
         elif self.item_url:
             url = self.item_url
         else:
